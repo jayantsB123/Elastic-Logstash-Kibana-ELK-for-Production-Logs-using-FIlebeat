@@ -1,12 +1,32 @@
+# ==============================================================================
+# Filebeat Configuration
+# This file tells Filebeat how to collect and send logs.
+# ==============================================================================
 filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /usr/logs/big01_q2.log # <--- This must be the container path
-  
-  multiline.pattern: '^<log realm='
-  multiline.negate: true
-  multiline.match: after
+  - type: log
+    enabled: true
+    paths:
+      # Use a wildcard to capture all log files
+    - /usr/logs/big01_q2.log
 
+    multiline.pattern: '^<log '
+    multiline.negate: true
+    multiline.match: after
+    # Ensure the pattern matches your multiline logs correctly
+    # In your case, each log event starts with a new <log tag.
+    # The `what: previous` from your original Logstash config is not needed here
+    # as `multiline.match: after` is a cleaner way to handle it.
+
+
+    # This section groups all lines until a new <log tag is found.
+    # CRITICAL ADDITION: Wait for a moment after the last line of a multi-line event
+    # to ensure all lines are captured before processing.
+    multiline.flush_pattern: '^</log>' # Flush the event when a closing </log> tag is detected
+    multiline.max_lines: 500           # Safety net: max lines for one event (adjust if needed)
+    multiline.timeout: 5s              # Safety net: max time to wait for more lines
+
+  # ==============================================================================
+  # Output to Logstash
+  # ==============================================================================
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts: [ "logstash:5044" ]
