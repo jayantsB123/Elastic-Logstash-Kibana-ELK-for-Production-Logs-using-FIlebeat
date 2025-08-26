@@ -55,8 +55,10 @@ services:
     volumes:
       # Mount the Filebeat config file
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      # Map the log file from the host to a consistent path in the container
       - /home/sarvatra.in/jayant.bhadauria/Documents/CBDC/icici-big/modules/big-icici/build/install/big-icici/log/big01_q2.log:/usr/logs/big01_q2.log:ro
+      - /home/sarvatra.in/jayant.bhadauria/Documents/CBDC/cbdc-icici/modules/cbdc-icici/build/install/cbdc-icici/log/rtsp_q2.log:/usr/logs/big02_q2.log:ro
+      - /home/sarvatra.in/jayant.bhadauria/Documents/CBDC/simulator-service/modules/simulator-service/build/install/simulator-service/log/simulator.log:/usr/logs/big03_q2.log:ro
+
     depends_on:
       - logstash
     networks:

@@ -1,5 +1,6 @@
 # filebeat.yml (drop-in)
 filebeat.inputs:
+  # handling the jpos logs from ICICI-BIG
   - type: log
     enabled: true
     paths:
@@ -15,6 +16,67 @@ filebeat.inputs:
     fields:
       service: jpos
       environment: production
+      log_source: big01_q2
+    fields_under_root: true
+
+    processors:
+      - add_host_metadata: ~
+      - add_cloud_metadata: ~
+      - add_fields:
+          target: ""
+          fields:
+            source_pipeline: "logstash_jpos_deep_parse"
+      - drop_fields:
+          fields: ["agent.ephemeral_id", "agent.id", "input.type", "prospector.type", "host.os"]
+          ignore_missing: true
+
+  # handling the jpos logs from rtsp-kernel
+  - type: log
+    enabled: true
+    paths:
+      - /usr/logs/big02_q2.log
+
+    multiline.pattern: '^<log\b'
+    multiline.negate: true
+    multiline.match: after
+    multiline.flush_pattern: '^</log>'
+    multiline.max_lines: 2000
+    multiline.timeout: 10s
+
+    fields:
+      service: jpos
+      environment: production
+      log_source: big02_q2
+    fields_under_root: true
+
+    processors:
+      - add_host_metadata: ~
+      - add_cloud_metadata: ~
+      - add_fields:
+          target: ""
+          fields:
+            source_pipeline: "logstash_jpos_deep_parse"
+      - drop_fields:
+          fields: [ "agent.ephemeral_id", "agent.id", "input.type", "prospector.type", "host.os" ]
+          ignore_missing: true
+
+  # handling the jpos logs from simulator-service (pso-simulator)
+  - type: log
+    enabled: true
+    paths:
+      - /usr/logs/big03_q2.log
+
+    multiline.pattern: '^<log\b'
+    multiline.negate: true
+    multiline.match: after
+    multiline.flush_pattern: '^</log>'
+    multiline.max_lines: 2000
+    multiline.timeout: 10s
+
+    fields:
+      service: jpos
+      environment: production
+      log_source: big03_q2
     fields_under_root: true
 
     processors:
@@ -30,7 +92,7 @@ filebeat.inputs:
 
 output.logstash:
   hosts: ["logstash:5044"]
-  worker: 1
+  worker: 2
   loadbalance: true
 
 logging.level: info
