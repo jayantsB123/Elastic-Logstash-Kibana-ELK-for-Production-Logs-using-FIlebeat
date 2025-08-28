@@ -1,0 +1,91 @@
+# realm-patterns.yml - Configuration for realm pattern matching
+# This file can be used to configure pattern matching without changing Logstash code
+
+realm_patterns:
+  # API-related realms
+  api:
+    patterns:
+      - "^API$"
+      - ".*-api$"
+      - ".*api.*"
+    event_type: "api_request"
+    log_level: "INFO"
+
+  connection:
+    patterns:
+      - ".*channel.*"
+      - ".*-conn.*"
+      - "cdci-channel-.*"
+    event_type: "connection"
+    log_level: "WARN"
+
+  transaction_manager:
+    patterns:
+      - ".*-txnmgr$"
+      - ".*txnmgr.*"
+      - "qrest-txnmgr"
+      - "req-hbt-txnmgr"
+      - "pso.*-txnmgr"
+    event_type: "transaction_manager"
+    log_level: "INFO"
+
+  pso_transaction:
+    patterns:
+      - "^pso.*"
+      - "pso_.*"
+      - ".*pso.*"
+    event_type: "pso_transaction"
+    log_level: "INFO"
+
+  standard_transaction:
+    patterns:
+      - "org.jpos.transaction.TransactionManager"
+    event_type: "transaction"
+    log_level: "INFO"
+
+field_patterns:
+  transaction_manager:
+    common:
+      - "(?m)TXNNAME:\\s*%{DATA:ctx_TXNNAME}"
+      - "(?m)TXN_ID:\\s*%{DATA:transaction_id}"
+      - "(?m)HTTP_STATUS:\\s*%{DATA:http_status}"
+      - "(?m)active-sessions=%{INT:active_sessions}/%{INT:max_sessions}"
+      - "(?m)tps=%{INT:transactions_per_second}"
+      - "(?m)elapsed=%{INT:elapsed_ms}ms"
+
+    pso_specific:
+      - "(?m)TXN_FLOW:\\s*%{DATA:transaction_flow}"
+      - "(?m)orgId=\"%{DATA:org_id}\""
+      - "(?m)msgId=\"%{DATA:message_id}\""
+      - "(?m)prodType=\"%{DATA:product_type}\""
+
+    heartbeat_specific:
+      - "(?m)API\\s*:\\s*%{DATA:api_name}"
+      - "(?m)type=\"%{DATA:heartbeat_type}\""
+
+#data_masking:
+#  mobile_numbers: "\\b[6-9]\\d{9}\\b"
+#  transaction_ids: "\\b(TXN|YES|UTX|ELK)[A-Z0-9]{10,50}\\b"
+#  message_ids: 'msgId="[^"]{20,}"'
+#  wallet_addresses: "\\b[13][a-km-zA-HJ-NP-Z1-9]{25,34}\\b"
+#  gps_coordinates: "\\b\\d{1,2}\\.\\d{4},\\d{1,3}\\.\\d{4}\\b"
+#  customer_names: '"[A-Z][A-Z ]{5,30}"'
+
+application_mapping:
+  big01_q2:
+    application_full_name: "ICICI-BIG"
+    application_category: "payment-gateway"
+    business_unit: "payments"
+    criticality: "high"
+
+  big02_q2:
+    application_full_name: "RTSP Kernel"
+    application_category: "srvt-switch"
+    business_unit: "cbdc"
+    criticality: "high"
+
+  big03_q2:
+    application_full_name: "PSO Simulator Service"
+    application_category: "testing-simulation"
+    business_unit: "testing"
+    criticality: "medium"

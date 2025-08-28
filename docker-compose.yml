@@ -27,6 +27,7 @@ services:
       - LS_JAVA_OPTS=-Xms1g -Xmx1g
     volumes:
       - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/config/realm-patterns.yml:/etc/logstash/realm-patterns.yml
     ports:
       - 5044:5044
       - 9600:9600
