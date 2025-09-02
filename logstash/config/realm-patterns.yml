@@ -79,13 +79,13 @@ application_mapping:
     criticality: "high"
 
   big02_q2:
-    application_full_name: "RTSP Kernel"
+    application_full_name: "RTSP-Kernel"
     application_category: "srvt-switch"
     business_unit: "cbdc"
     criticality: "high"
 
   big03_q2:
-    application_full_name: "PSO Simulator Service"
+    application_full_name: "PSO-Simulator-Service"
     application_category: "testing-simulation"
     business_unit: "testing"
     criticality: "medium"
