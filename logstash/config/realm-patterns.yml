@@ -2,7 +2,6 @@
 # This file can be used to configure pattern matching without changing Logstash code
 
 realm_patterns:
-  # API-related realms
   api:
     patterns:
       - "^API$"
@@ -62,14 +61,6 @@ field_patterns:
     heartbeat_specific:
       - "(?m)API\\s*:\\s*%{DATA:api_name}"
       - "(?m)type=\"%{DATA:heartbeat_type}\""
-
-#data_masking:
-#  mobile_numbers: "\\b[6-9]\\d{9}\\b"
-#  transaction_ids: "\\b(TXN|YES|UTX|ELK)[A-Z0-9]{10,50}\\b"
-#  message_ids: 'msgId="[^"]{20,}"'
-#  wallet_addresses: "\\b[13][a-km-zA-HJ-NP-Z1-9]{25,34}\\b"
-#  gps_coordinates: "\\b\\d{1,2}\\.\\d{4},\\d{1,3}\\.\\d{4}\\b"
-#  customer_names: '"[A-Z][A-Z ]{5,30}"'
 
 application_mapping:
   big01_q2:
